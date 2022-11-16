@@ -6,6 +6,9 @@ pipeline {
     disableConcurrentBuilds()
     skipDefaultCheckout true
   }
+   environment {
+    git_credentials = credentials("GITHUB_CREDENTIALS")
+  }
   stages {
     stage("Checkout") {
       steps {
@@ -14,7 +17,7 @@ pipeline {
           doGenerateSubmoduleConfigurations: false, 
           extensions: [], 
           submoduleCfg: [], 
-                  userRemoteConfigs: [[credentialsId: "${GITHUB_CREDENTIALS}", url: "https://github.com/Darshinikannan/sample-app-for-ptc.git"]]]
+                  userRemoteConfigs: [[credentialsId: "${git_credentials}", url: "https://github.com/Darshinikannan/sample-app-for-ptc.git"]]]
         )
       }
     }
