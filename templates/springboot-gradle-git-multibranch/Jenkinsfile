@@ -1,0 +1,68 @@
+pipeline {
+  agent none
+  options {
+    durabilityHint("PERFORMANCE_OPTIMIZED")
+    timeout(time: 3, unit: "DAYS")
+    disableConcurrentBuilds()
+    skipDefaultCheckout true
+  }
+  environment {
+    SNYK_TOKEN = credentials("snyk-token")
+  }
+  stages {
+    stage("build and scan") {
+      agent { label "linux" }
+      when {
+        beforeAgent true
+        not { triggeredBy 'BranchIndexingCause' }
+      }
+      stages {
+        stage("Checkout") {
+          steps {
+            checkout scm
+          }
+        }
+        stage("Build") {
+          steps {
+            sh "./gradlew clean build"
+          }
+        }
+        stage("Security Scan") {
+          when {
+            branch "main"
+          }
+          steps {
+            sh '''
+              snyk auth ${SNYK_TOKEN}
+              snyk test --all-sub-projects
+            '''
+          }
+        }
+      }
+    }
+    stage("Confirm Deploy") {
+      agent none
+      when {
+        branch "main"
+        not { triggeredBy 'BranchIndexingCause' }
+      }
+      options {
+        timeout(time: 12, unit: "HOURS")
+      }
+      steps {
+        input(message: "Approve Deploy?", ok: "Yes")
+      }
+    }
+    stage("Deploy") {
+      agent { label "linux" }
+      when {
+        beforeAgent true
+        branch "main"
+        not { triggeredBy 'BranchIndexingCause' }
+      }
+      steps {
+        echo "do the deploy"
+      }
+    }
+  }
+}
