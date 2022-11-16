@@ -13,11 +13,11 @@ pipeline {
     stage("Checkout") {
       steps {
         checkout([$class: "GitSCM", 
-          branches: [[name: "main"]], 
+          branches: [[name: "${branchName}"]], 
           doGenerateSubmoduleConfigurations: false, 
           extensions: [], 
           submoduleCfg: [], 
-                  userRemoteConfigs: [[credentialsId: "${git_credentials}", url: "https://github.com/jenkins-docs/simple-java-maven-app.git"]]]
+                  userRemoteConfigs: [[credentialsId: "${git_credentials}", url: "${repoUrl}"]]]
         )
       }
     }
