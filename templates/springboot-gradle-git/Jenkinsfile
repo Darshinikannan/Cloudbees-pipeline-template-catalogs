@@ -10,11 +10,11 @@ pipeline {
     stage("Checkout") {
       steps {
         checkout([$class: "GitSCM", 
-          branches: [[name: "${branchName}"]], 
+          branches: [[name: "main"]], 
           doGenerateSubmoduleConfigurations: false, 
           extensions: [], 
           submoduleCfg: [], 
-          userRemoteConfigs: [[credentialsId: "${gitCredentials}", url: "${repoUrl}"]]]
+                  userRemoteConfigs: [[credentialsId: "${GITHUB_CREDENTIALS}", url: "https://github.com/Darshinikannan/sample-app-for-ptc.git"]]]
         )
       }
     }
