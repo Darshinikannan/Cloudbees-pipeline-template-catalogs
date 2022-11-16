@@ -1,0 +1,12 @@
+type: pipeline-template
+version: 1
+
+name: Quarkus Maven Template
+description: Quarkus Maven Template
+parameters:
+  - name: previewEnvHostname
+    displayName: Preview env hostname
+    defaultValue: foo
+  - name: emailRecipient
+    displayName: Email address for build notifications
+    defaultValue: foo@bar.com
